@@ -32,8 +32,11 @@ apt-get install -y oracle-java7-installer
 # minecraft
 adduser -q --disabled-password --gecos '' minecraft
 mkdir ~minecraft/server
-curl https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar \
-  -o ~minecraft/server/minecraft_server.jar
+curl -L http://dl.bukkit.org/latest-rb/craftbukkit.jar \
+  -o ~minecraft/server/craftbukkit.jar
 chown -R minecraft:minecraft ~minecraft/server
+echo "while true; do java -Xms1024M -Xmx1024M -jar craftbukkit.jar -o true; sleep 10; done" \
+  > ~minecraft/server/keep_running.sh
+chmod +x ~minecraft/server/keep_running.sh
 tmux new-session -d -s minecraft \
-"su minecraft -c 'cd ~minecraft/server && java -jar minecraft_server.jar nogui'"
+"su minecraft -c 'cd ~minecraft/server && ./keep_running.sh'"
